@@ -1,0 +1,13 @@
+const incidents = [
+  {name:'Northstar Retail (Sample)',sector:'Retail',severity:'High',date:'Nov 18, 2026'},
+  {name:'Cedar Health (Sample)',sector:'Healthcare',severity:'Medium',date:'Nov 12, 2026'},
+  {name:'BrightPay Demo',sector:'Finance',severity:'High',date:'Nov 08, 2026'},
+  {name:'MetroLearn Sample',sector:'Education',severity:'Low',date:'Oct 29, 2026'},
+  {name:'CloudDesk Demo',sector:'Technology',severity:'Medium',date:'Oct 21, 2026'},
+  {name:'GreenCart Sample',sector:'Retail',severity:'Low',date:'Oct 14, 2026'}
+];
+document.getElementById('incident-table').innerHTML = incidents.map(x => `<tr><td>${x.name}</td><td>${x.sector}</td><td><span class="severity ${x.severity.toLowerCase()}">${x.severity}</span></td><td>${x.date}</td></tr>`).join('');
+const checks=[...document.querySelectorAll('.checklist input')];
+checks.forEach(c=>c.addEventListener('change',()=>{const n=checks.filter(x=>x.checked).length;document.getElementById('completion').textContent=`${n}/4`;document.getElementById('progress-fill').style.width=`${n/4*100}%`;}));
+document.getElementById('url-form').addEventListener('submit',e=>{e.preventDefault();const raw=document.getElementById('url-input').value.trim(),out=document.getElementById('url-result');let u;try{u=new URL(raw.includes('://')?raw:`https://${raw}`)}catch{out.className='result warn';out.textContent='Could not read this URL. Check the spelling and try again.';return}const w=[];if(u.protocol!=='https:')w.push('It does not use HTTPS.');if(u.hostname.startsWith('xn--')||u.hostname.includes('.xn--'))w.push('It contains a punycode domain.');if(u.hostname.split('.').length>4)w.push('It has an unusually long subdomain chain.');if(u.username||u.password)w.push('It contains login information in the URL.');if(/^\d{1,3}(\.\d{1,3}){3}$/.test(u.hostname))w.push('It uses an IP address instead of a domain name.');if(w.length){out.className='result warn';out.textContent='Warning signs: '+w.join(' ')}else{out.className='result good';out.textContent='No basic warning signs detected. This does NOT prove the website is safe. Verify the domain independently.'}});
+document.querySelectorAll('.answers button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.answers button').forEach(x=>{x.disabled=true;x.classList.remove('correct','incorrect')});const ok=b.dataset.correct==='true';b.classList.add(ok?'correct':'incorrect');document.getElementById('quiz-feedback').textContent=ok?'Correct! Never follow unexpected password requests. Visit the official website directly.':'Not quite. Do not click unexpected password links or share your password. Verify through a trusted channel.'}));
